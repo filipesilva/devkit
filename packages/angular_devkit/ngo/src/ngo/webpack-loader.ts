@@ -1,4 +1,5 @@
 import { RawSourceMap, SourceMapConsumer, SourceMapGenerator } from 'source-map';
+import * as webpack from 'webpack';
 const loaderUtils = require('loader-utils');
 
 import { ngo } from './ngo';
@@ -8,7 +9,8 @@ interface NgoLoaderOptions {
   sourceMap: boolean;
 }
 
-export default function ngoLoader(content: string, previousSourceMap: RawSourceMap) {
+export default function ngoLoader
+  (this: webpack.loader.LoaderContext, content: string, previousSourceMap: RawSourceMap) {
   this.cacheable();
   const options: NgoLoaderOptions = loaderUtils.getOptions(this) || {};
 
@@ -16,7 +18,7 @@ export default function ngoLoader(content: string, previousSourceMap: RawSourceM
   const intermediateSourceMap = ngoOutput.sourceMap;
   let newContent = ngoOutput.content;
 
-  let newSourceMap = null;
+  let newSourceMap;
 
   if (options.sourceMap && intermediateSourceMap) {
     // Webpack doesn't need sourceMappingURL since we pass them on explicitely.
@@ -24,7 +26,7 @@ export default function ngoLoader(content: string, previousSourceMap: RawSourceM
 
     if (!previousSourceMap) {
       // If we're emitting sourcemaps but there is no previous one, then we're the first loader.
-      newSourceMap = intermediateSourceMap;
+      newSourceMap = JSON.stringify(intermediateSourceMap);
     } else {
       // If there's a previous sourcemap, we're an intermediate loader and we have to chain them.
       // Fill in the intermediate sourcemap source as the previous sourcemap file.
@@ -35,7 +37,7 @@ export default function ngoLoader(content: string, previousSourceMap: RawSourceM
       const consumer = new SourceMapConsumer(intermediateSourceMap);
       const generator = SourceMapGenerator.fromSourceMap(consumer);
       generator.applySourceMap(new SourceMapConsumer(previousSourceMap));
-      newSourceMap = generator.toJSON();
+      newSourceMap = JSON.stringify(generator.toJSON());
     }
   }
 

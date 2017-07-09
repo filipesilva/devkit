@@ -46,6 +46,7 @@
     "dist/**/*",
     "node_modules/**/*",
     "packages/schematics/angular/*/files/**/*",
+    "packages/angular_devkit/ngo/integration/**/*",
     "tmp/**/*"
   ]
 }
