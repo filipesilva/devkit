@@ -45,7 +45,7 @@ export function findTopLevelFunctions(parentNode: ts.Node): ts.Node[] {
   const topLevelFunctions: ts.Node[] = [];
 
   let previousNode: ts.Node;
-  function cb(node: ts.Node): any {
+  function cb(node: ts.Node) {
     // Stop recursing into this branch if it's a function expression or declaration
     if (node.kind === ts.SyntaxKind.FunctionDeclaration
       || node.kind === ts.SyntaxKind.FunctionExpression) {
@@ -66,12 +66,15 @@ export function findTopLevelFunctions(parentNode: ts.Node): ts.Node[] {
 
     previousNode = node;
 
-    return ts.forEachChild(node, cb);
+    ts.forEachChild(node, cb);
   }
 
-  function isIIFE(node: any): boolean {
-    return node.kind === ts.SyntaxKind.CallExpression && !node.expression.text &&
-      node.expression.kind !== ts.SyntaxKind.PropertyAccessExpression;
+  function isIIFE(node: ts.Node): boolean {
+    return node.kind === ts.SyntaxKind.CallExpression
+      // This check was in the old ngo but it doesn't seem to make sense with the typings.
+      // TODO(filipesilva): ask Alex Rickabaugh about it.
+      // && !(<ts.CallExpression>node).expression.text
+      && (<ts.CallExpression>node).expression.kind !== ts.SyntaxKind.PropertyAccessExpression;
   }
 
   ts.forEachChild(parentNode, cb);
@@ -83,13 +86,16 @@ export function findPureImports(parentNode: ts.Node): string[] {
   const pureImports: string[] = [];
   ts.forEachChild(parentNode, cb);
 
-  function cb(node: any): any {
-    if (node.kind === ts.SyntaxKind.ImportDeclaration && node.importClause) {
+  function cb(node: ts.Node) {
+    if (node.kind === ts.SyntaxKind.ImportDeclaration
+      && (<ts.ImportDeclaration>node).importClause) {
+
       // Save the path of the import transformed into snake case
-      pureImports.push(node.moduleSpecifier.text.replace(/[\/@\-]/g, '_'));
+      const moduleSpecifier = (<ts.ImportDeclaration>node).moduleSpecifier as ts.StringLiteral;
+      pureImports.push(moduleSpecifier.text.replace(/[\/@\-]/g, '_'));
     }
 
-    return ts.forEachChild(node, cb);
+    ts.forEachChild(node, cb);
   }
 
   return pureImports;

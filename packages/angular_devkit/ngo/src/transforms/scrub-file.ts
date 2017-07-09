@@ -58,7 +58,10 @@ export function getScrubFileTransformer(program: ts.Program): ts.TransformerFact
       const visitor: ts.Visitor = (node: ts.Node): ts.Node => {
         // Check if node is a statement to be dropped.
         if (nodes.find((n) => n === node)) {
-          return null as any;
+          // According to @mhegazy returning undefined is supported.
+          // https://github.com/Microsoft/TypeScript/pull/17044
+          // tslint:disable-next-line:no-any
+          return undefined as any;
         }
 
         // Otherwise return node as is.
@@ -84,6 +87,7 @@ function collectDeepNodes<T>(node: ts.Node, kind: ts.SyntaxKind): T[] {
   const nodes: T[] = [];
   const helper = (child: ts.Node) => {
     if (child.kind === kind) {
+      // tslint:disable-next-line:no-any
       nodes.push(child as any as T);
     }
     ts.forEachChild(child, helper);

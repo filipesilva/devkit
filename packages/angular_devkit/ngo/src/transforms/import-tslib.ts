@@ -50,8 +50,10 @@ function createTslibImport(node: ts.Node, useRequire = false): ts.Node {
     // Use `import { __helper } from "tslib"`.
     const namedImports = ts.createNamedImports([ts.createImportSpecifier(undefined,
       ts.createIdentifier(name))]);
-    // typescript@next is needed for a fix to the function parameter types of ts.createImportClause.
+    // typescript@2.4 is needed for a fix to the function parameter types of ts.createImportClause.
     // https://github.com/Microsoft/TypeScript/pull/15999
+    // Hiding it from lint until we upgrade.
+    // tslint:disable-next-line:no-any
     const importClause = (ts.createImportClause as any)(undefined, namedImports);
     const newNode = ts.createImportDeclaration(undefined, undefined, importClause,
       ts.createLiteral('tslib'));

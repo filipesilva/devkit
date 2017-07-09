@@ -25,7 +25,10 @@ export function getFoldFileTransformer(program: ts.Program): ts.TransformerFacto
       const visitor: ts.Visitor = (node: ts.Node): ts.Node => {
         // Check if node is a statement to be dropped.
         if (statements.find((st) => st.expressionStatement === node)) {
-          return null as any;
+          // According to @mhegazy returning undefined is supported.
+          // https://github.com/Microsoft/TypeScript/pull/17044
+          // tslint:disable-next-line:no-any
+          return undefined as any;
         }
 
         // Check if node is a class to add statements to.
