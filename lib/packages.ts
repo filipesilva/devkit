@@ -67,7 +67,6 @@ function loadPackageJson(p: string) {
   return pkg;
 }
 
-debugger:
 const packageJsonPaths =
   glob.sync(path.join(packageRoot, '**/package.json'))
     // Removing all files from templates.
