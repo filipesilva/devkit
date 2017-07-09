@@ -28,6 +28,7 @@ export const transformJavascript = (options: TransformJavascriptOptions) => {
         getNewLine: () => ts.sys.newLine,
         getCanonicalFileName: (f: string) => f,
       });
+
       return errors;
     }
   };
@@ -45,7 +46,8 @@ export const transformJavascript = (options: TransformJavascriptOptions) => {
 
   // We need to load the default lib for noEmitOnError to work properly.
   const defaultLibFileName = 'lib.d.ts';
-  const defaultLibContent = readFileSync(join(dirname(require.resolve('typescript')), defaultLibFileName), 'UTF-8');
+  const defaultLibContent = readFileSync(join(dirname(require.resolve('typescript')),
+    defaultLibFileName), 'UTF-8');
   fileMap.set(defaultLibFileName, defaultLibContent);
 
   fileMap.forEach((v, k) => sourcesMap.set(
@@ -118,7 +120,8 @@ export const transformJavascript = (options: TransformJavascriptOptions) => {
     // Fix sourcemaps file references.
     if (outputFilePath) {
       sourceMap.file = basename(outputFilePath);
-      transformedContent = transformedContent.replace(urlRegExp, `//# sourceMappingURL=${sourceMap.file}.map\n`);
+      transformedContent = transformedContent.replace(urlRegExp,
+        `//# sourceMappingURL=${sourceMap.file}.map\n`);
       if (inputFilePath) {
         sourceMap.sources = [inputFilePath];
       } else {

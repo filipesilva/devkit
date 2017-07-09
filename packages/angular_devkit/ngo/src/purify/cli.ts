@@ -24,7 +24,8 @@ if (!inputFile.match(tsOrJsRegExp)) {
 }
 
 // Use provided output file, or add the .ngo suffix before the extension.
-const outputFile = process.argv[3] || inputFile.replace(tsOrJsRegExp, (subStr) => `.purify${subStr}`);
+const outputFile = process.argv[3]
+  || inputFile.replace(tsOrJsRegExp, (subStr) => `.purify${subStr}`);
 
 const purifyOutput = purify(readFileSync(join(currentDir, inputFile), 'UTF-8'));
 

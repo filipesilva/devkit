@@ -49,7 +49,8 @@ export function getScrubFileTransformer(program: ts.Program): ts.TransformerFact
         if (isPropDecoratorAssignmentExpression(exprStmt)) {
           nodes.push(...pickPropDecorationNodesToRemove(exprStmt, ngMetadata, checker));
         }
-        if (isCtorParamsAssignmentExpression(exprStmt) && !isCtorParamsWhitelistedService(exprStmt)) {
+        if (isCtorParamsAssignmentExpression(exprStmt)
+          && !isCtorParamsWhitelistedService(exprStmt)) {
           nodes.push(node);
         }
       });
@@ -66,6 +67,7 @@ export function getScrubFileTransformer(program: ts.Program): ts.TransformerFact
 
       return ts.visitNode(sf, visitor);
     };
+
     return transformer;
   };
 }
@@ -74,6 +76,7 @@ export function expect<T extends ts.Node>(node: ts.Node, kind: ts.SyntaxKind): T
   if (node.kind !== kind) {
     throw new Error('Invalid!');
   }
+
   return node as T;
 }
 
@@ -86,6 +89,7 @@ function collectDeepNodes<T>(node: ts.Node, kind: ts.SyntaxKind): T[] {
     ts.forEachChild(child, helper);
   };
   ts.forEachChild(node, helper);
+
   return nodes;
 }
 
@@ -127,6 +131,7 @@ function findAllDeclarations(node: ts.Node): ts.VariableDeclaration[] {
       });
     }
   });
+
   return nodes;
 }
 
@@ -162,6 +167,7 @@ function isDecoratorAssignmentExpression(exprStmt: ts.ExpressionStatement): bool
   if (expr.right.kind !== ts.SyntaxKind.ArrayLiteralExpression) {
     return false;
   }
+
   return true;
 }
 
@@ -186,6 +192,7 @@ function isPropDecoratorAssignmentExpression(exprStmt: ts.ExpressionStatement): 
   if (expr.right.kind !== ts.SyntaxKind.ObjectLiteralExpression) {
     return false;
   }
+
   return true;
 }
 
@@ -210,6 +217,7 @@ function isCtorParamsAssignmentExpression(exprStmt: ts.ExpressionStatement): boo
   if (expr.right.kind !== ts.SyntaxKind.FunctionExpression) {
     return false;
   }
+
   return true;
 }
 
@@ -217,27 +225,37 @@ function isCtorParamsWhitelistedService(exprStmt: ts.ExpressionStatement): boole
   const expr = exprStmt.expression as ts.BinaryExpression;
   const propAccess = expr.left as ts.PropertyAccessExpression;
   const serviceId = propAccess.expression as ts.Identifier;
+
   return PLATFORM_WHITELIST.indexOf(serviceId.text) !== -1;
 }
 
-function pickDecorationNodesToRemove(exprStmt: ts.ExpressionStatement, ngMetadata: ts.Node[],
-  checker: ts.TypeChecker): ts.Node[] {
+function pickDecorationNodesToRemove(
+  exprStmt: ts.ExpressionStatement,
+  ngMetadata: ts.Node[],
+  checker: ts.TypeChecker,
+): ts.Node[] {
 
   const expr = expect<ts.BinaryExpression>(exprStmt.expression, ts.SyntaxKind.BinaryExpression);
-  const literal = expect<ts.ArrayLiteralExpression>(expr.right, ts.SyntaxKind.ArrayLiteralExpression);
+  const literal = expect<ts.ArrayLiteralExpression>(expr.right,
+    ts.SyntaxKind.ArrayLiteralExpression);
   if (!literal.elements.every((elem) => elem.kind === ts.SyntaxKind.ObjectLiteralExpression)) {
     return [];
   }
   const elements = literal.elements as ts.Node[] as ts.ObjectLiteralExpression[];
   const ngDecorators = elements.filter((elem) => isAngularDecorator(elem, ngMetadata, checker));
+
   return (elements.length > ngDecorators.length) ? ngDecorators : [exprStmt];
 }
 
-function pickPropDecorationNodesToRemove(exprStmt: ts.ExpressionStatement, ngMetadata: ts.Node[],
-  checker: ts.TypeChecker): ts.Node[] {
+function pickPropDecorationNodesToRemove(
+  exprStmt: ts.ExpressionStatement,
+  ngMetadata: ts.Node[],
+  checker: ts.TypeChecker,
+): ts.Node[] {
 
   const expr = expect<ts.BinaryExpression>(exprStmt.expression, ts.SyntaxKind.BinaryExpression);
-  const literal = expect<ts.ObjectLiteralExpression>(expr.right, ts.SyntaxKind.ObjectLiteralExpression);
+  const literal = expect<ts.ObjectLiteralExpression>(expr.right,
+    ts.SyntaxKind.ObjectLiteralExpression);
   if (!literal.properties.every((elem) => elem.kind === ts.SyntaxKind.PropertyAssignment &&
     (elem as ts.PropertyAssignment).initializer.kind === ts.SyntaxKind.ArrayLiteralExpression)) {
     return [];
@@ -248,17 +266,21 @@ function pickPropDecorationNodesToRemove(exprStmt: ts.ExpressionStatement, ngMet
   const toRemove = assignments
     .map((assign) => {
       const decorators =
-        expect<ts.ArrayLiteralExpression>(assign.initializer, ts.SyntaxKind.ArrayLiteralExpression).elements;
+        expect<ts.ArrayLiteralExpression>(assign.initializer,
+          ts.SyntaxKind.ArrayLiteralExpression).elements;
       if (!decorators.every((el) => el.kind === ts.SyntaxKind.ObjectLiteralExpression)) {
         return [];
       }
       const decsToRemove = decorators.filter((expression) => {
-        const lit = expect<ts.ObjectLiteralExpression>(expression, ts.SyntaxKind.ObjectLiteralExpression);
+        const lit = expect<ts.ObjectLiteralExpression>(expression,
+          ts.SyntaxKind.ObjectLiteralExpression);
+
         return isAngularDecorator(lit, ngMetadata, checker);
       });
       if (decsToRemove.length === decorators.length) {
         return [assign];
       }
+
       return decsToRemove;
     })
     .reduce((accum, toRm) => accum.concat(toRm), [] as ts.Node[]);
@@ -269,11 +291,15 @@ function pickPropDecorationNodesToRemove(exprStmt: ts.ExpressionStatement, ngMet
     toRemove.every((node) => node.kind === ts.SyntaxKind.PropertyAssignment)) {
     return [exprStmt];
   }
+
   return toRemove;
 }
 
-function isAngularDecorator(literal: ts.ObjectLiteralExpression, ngMetadata: ts.Node[],
-  checker: ts.TypeChecker): boolean {
+function isAngularDecorator(
+  literal: ts.ObjectLiteralExpression,
+  ngMetadata: ts.Node[],
+  checker: ts.TypeChecker,
+): boolean {
 
   const types = literal.properties.filter(isTypeProperty);
   if (types.length !== 1) {
@@ -285,6 +311,7 @@ function isAngularDecorator(literal: ts.ObjectLiteralExpression, ngMetadata: ts.
   }
   const id = assign.initializer as ts.Identifier;
   const res = identifierIsMetadata(id, ngMetadata, checker);
+
   return res;
 }
 
@@ -297,15 +324,21 @@ function isTypeProperty(prop: ts.ObjectLiteralElement): boolean {
     return false;
   }
   const name = assignment.name as ts.Identifier;
+
   return name.text === 'type';
 }
 
 // Check if an identifier is part of the known Angular Metadata.
-function identifierIsMetadata(id: ts.Identifier, metadata: ts.Node[], checker: ts.TypeChecker): boolean {
+function identifierIsMetadata(
+  id: ts.Identifier,
+  metadata: ts.Node[],
+  checker: ts.TypeChecker,
+): boolean {
   const symbol = checker.getSymbolAtLocation(id);
   if (!symbol || !symbol.declarations || !symbol.declarations.length) {
     return false;
   }
+
   return symbol
     .declarations
     .some((spec) => metadata.indexOf(spec) !== -1);

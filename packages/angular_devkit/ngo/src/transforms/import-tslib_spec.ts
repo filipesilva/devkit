@@ -42,11 +42,13 @@ describe('import-tslib', () => {
   });
 
   it('replaces __metadata with', () => {
+    // tslint:disable:max-line-length
     const input = stripIndent`
       var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
       };
     `;
+    // tslint:enable:max-line-length
     const output = stripIndent`
       import { __metadata } from "tslib";
     `;

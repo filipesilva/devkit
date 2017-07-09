@@ -64,6 +64,7 @@ export function getFoldFileTransformer(program: ts.Program): ts.TransformerFacto
 
       return ts.visitNode(sf, visitor);
     };
+
     return transformer;
   };
 }
@@ -123,7 +124,9 @@ function findClassDeclarations(node: ts.Node): ClassData[] {
   return classes;
 }
 
-function findClassStaticPropertyAssignments(node: ts.Node, checker: ts.TypeChecker,
+function findClassStaticPropertyAssignments(
+  node: ts.Node,
+  checker: ts.TypeChecker,
   classes: ClassData[]): StatementData[] {
 
   const statements: StatementData[] = [];
@@ -155,7 +158,8 @@ function findClassStaticPropertyAssignments(node: ts.Node, checker: ts.TypeCheck
     if (decls === undefined || decls.length !== 1) {
       return;
     }
-    const classIdx = classes.map((clazz) => clazz.class).indexOf(decls[0] as ts.VariableDeclaration);
+    const classIdx = classes
+      .map((clazz) => clazz.class).indexOf(decls[0] as ts.VariableDeclaration);
     if (classIdx === -1) {
       return;
     }
@@ -165,5 +169,6 @@ function findClassStaticPropertyAssignments(node: ts.Node, checker: ts.TypeCheck
     hostClass.statements.push(statement);
     statements.push(statement);
   });
+
   return statements;
 }

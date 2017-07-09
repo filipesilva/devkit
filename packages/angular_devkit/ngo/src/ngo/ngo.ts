@@ -43,7 +43,8 @@ export function ngo(options: NgoOptions): { content: string, sourceMap: RawSourc
 
 
   if (HAS_DECORATORS.test(content) || HAS_CTOR_PARAMETERS.test(content)) {
-    // Order matters, getPrefixFunctionsTransformer needs to be called before getFoldFileTransformer.
+    // Order matters, getPrefixFunctionsTransformer needs to be called before
+    // getFoldFileTransformer.
     getTransforms.push(...[
       getPrefixFunctionsTransformer,
       getScrubFileTransformer,
@@ -64,6 +65,7 @@ export function ngo(options: NgoOptions): { content: string, sourceMap: RawSourc
   } else if (emitSourceMap) {
     // Emit a sourcemap with no changes.
     const ms = new MagicString(content);
+
     return {
       content,
       sourceMap: ms.generateMap({

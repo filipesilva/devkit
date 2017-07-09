@@ -25,12 +25,14 @@ describe('ngo', () => {
         Clazz.propDecorators = { 'ngIf': [{ type: Input }] };
         Clazz.ctorParameters = function () { return [{type: Injector}]; };
       `;
+      // tslint:disable:max-line-length
       const output = oneLine`
         /** PURE_IMPORTS_START _angular_core,tslib PURE_IMPORTS_END */
         ${imports}
         import { __extends } from "tslib";
         var Clazz = /*@__PURE__*/ (function () { function Clazz() { } ${staticProperty} return Clazz; }());
       `;
+      // tslint:enable:max-line-length
 
       expect(oneLine`${ngo({ content: input }).content}`).toEqual(output);
     });
@@ -98,7 +100,8 @@ describe('ngo', () => {
     });
 
     it('emits sources content', () => {
-      const sourceMap = ngo({ content: transformableInput, emitSourceMap: true }).sourceMap as RawSourceMap;
+      const sourceMap =
+        ngo({ content: transformableInput, emitSourceMap: true }).sourceMap as RawSourceMap;
       const sourceContent = sourceMap.sourcesContent as string[];
       expect(sourceContent[0]).toEqual(transformableInput);
     });

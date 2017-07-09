@@ -36,6 +36,7 @@ export function getPrefixFunctionsTransformer(): ts.TransformerFactory<ts.Source
 
       return ts.visitNode(sf, visitor);
     };
+
     return transformer;
   };
 }
@@ -46,22 +47,26 @@ export function findTopLevelFunctions(parentNode: ts.Node): ts.Node[] {
   let previousNode: ts.Node;
   function cb(node: ts.Node): any {
     // Stop recursing into this branch if it's a function expression or declaration
-    if (node.kind === ts.SyntaxKind.FunctionDeclaration || node.kind === ts.SyntaxKind.FunctionExpression) {
+    if (node.kind === ts.SyntaxKind.FunctionDeclaration
+      || node.kind === ts.SyntaxKind.FunctionExpression) {
       return;
     }
 
     // We need to check specially for IIFEs formatted as call expressions inside parenthesized
     // expressions: `(function() {}())` Their start pos doesn't include the opening paren
     // and must be adjusted.
-    if (isIIFE(node) && previousNode.kind === ts.SyntaxKind.ParenthesizedExpression && node.parent) {
+    if (isIIFE(node)
+      && previousNode.kind === ts.SyntaxKind.ParenthesizedExpression
+      && node.parent) {
       topLevelFunctions.push(node.parent);
-    } else if (node.kind === ts.SyntaxKind.CallExpression || node.kind === ts.SyntaxKind.NewExpression) {
+    } else if (node.kind === ts.SyntaxKind.CallExpression
+      || node.kind === ts.SyntaxKind.NewExpression) {
       topLevelFunctions.push(node);
     }
 
     previousNode = node;
-    return ts.forEachChild(node, cb);
 
+    return ts.forEachChild(node, cb);
   }
 
   function isIIFE(node: any): boolean {
@@ -83,7 +88,9 @@ export function findPureImports(parentNode: ts.Node): string[] {
       // Save the path of the import transformed into snake case
       pureImports.push(node.moduleSpecifier.text.replace(/[\/@\-]/g, '_'));
     }
+
     return ts.forEachChild(node, cb);
   }
+
   return pureImports;
 }

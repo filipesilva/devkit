@@ -23,6 +23,7 @@ export function getImportTslibTransformer(): ts.TransformerFactory<ts.SourceFile
 
       return ts.visitNode(sf, visitor);
     };
+
     return transformer;
   };
 }
@@ -36,7 +37,8 @@ function createTslibImport(node: ts.Node, useRequire = false): ts.Node {
 
   if (useRequire) {
     // Use `var __helper = /*@__PURE__*/ require("tslib").__helper`.
-    const requireCall = ts.createCall(ts.createIdentifier('require'), undefined, [ts.createLiteral('tslib')]);
+    const requireCall = ts.createCall(ts.createIdentifier('require'), undefined,
+      [ts.createLiteral('tslib')]);
     const pureRequireCall = ts.addSyntheticLeadingComment(
       requireCall, ts.SyntaxKind.MultiLineCommentTrivia, '@__PURE__', false);
     const helperAccess = ts.createPropertyAccess(pureRequireCall, name);
@@ -46,11 +48,13 @@ function createTslibImport(node: ts.Node, useRequire = false): ts.Node {
     return variableStatement;
   } else {
     // Use `import { __helper } from "tslib"`.
-    const namedImports = ts.createNamedImports([ts.createImportSpecifier(undefined, ts.createIdentifier(name))]);
+    const namedImports = ts.createNamedImports([ts.createImportSpecifier(undefined,
+      ts.createIdentifier(name))]);
     // typescript@next is needed for a fix to the function parameter types of ts.createImportClause.
     // https://github.com/Microsoft/TypeScript/pull/15999
     const importClause = (ts.createImportClause as any)(undefined, namedImports);
-    const newNode = ts.createImportDeclaration(undefined, undefined, importClause, ts.createLiteral('tslib'));
+    const newNode = ts.createImportDeclaration(undefined, undefined, importClause,
+      ts.createLiteral('tslib'));
 
     return newNode;
   }
