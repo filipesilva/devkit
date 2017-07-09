@@ -199,7 +199,8 @@ runner.onComplete((success: boolean) => {
 glob.sync('packages/**/*.spec.ts')
   .filter(p => !/\/schematics\/.*\/files\//.test(p))
   .forEach(path => {
-    console.error(`Invalid spec file name: ${path}. You're using the old convention.`);
+    console.error(`Invalid spec file name: ${path}. You're using the old convention. `
+      + 'Use NAME_spec.ts instead.');
   });
 
 // Run the tests.

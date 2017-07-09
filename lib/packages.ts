@@ -67,11 +67,14 @@ function loadPackageJson(p: string) {
   return pkg;
 }
 
-
+debugger:
 const packageJsonPaths =
   glob.sync(path.join(packageRoot, '**/package.json'))
     // Removing all files from templates.
-    .filter(p => !p.match(/\/angular.*files\//));
+    .filter(p => !p.match(/\/angular.*files\//))
+    // Remove extra build-optimizer package.json.
+    .filter(p => !p.match(/\/ngo\/webpack-loader\//))
+    .filter(p => !p.match(/\/ngo\/integration\//));
 
 
 // All the supported packages. Go through the packages directory and create a _map of

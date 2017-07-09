@@ -49,7 +49,7 @@ describe('ngo', () => {
   describe('resilience', () => {
     it('doesn\'t process files with invalid syntax by default', () => {
       const input = oneLine`
-        $\123))))invalid syntax
+        ))))invalid syntax
         ${clazz}
         Clazz.decorators = [ { type: Injectable } ];
       `;
@@ -59,7 +59,7 @@ describe('ngo', () => {
 
     it('throws on files with invalid syntax in strict mode', () => {
       const input = oneLine`
-        $\123))))invalid syntax
+        ))))invalid syntax
         ${clazz}
         Clazz.decorators = [ { type: Injectable } ];
       `;

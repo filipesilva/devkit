@@ -42,7 +42,6 @@ export function getPrefixFunctionsTransformer(): ts.TransformerFactory<ts.Source
 
 export function findTopLevelFunctions(parentNode: ts.Node): ts.Node[] {
   const topLevelFunctions: ts.Node[] = [];
-  ts.forEachChild(parentNode, cb);
 
   let previousNode: ts.Node;
   function cb(node: ts.Node): any {
@@ -69,6 +68,8 @@ export function findTopLevelFunctions(parentNode: ts.Node): ts.Node[] {
     return node.kind === ts.SyntaxKind.CallExpression && !node.expression.text &&
       node.expression.kind !== ts.SyntaxKind.PropertyAccessExpression;
   }
+
+  ts.forEachChild(parentNode, cb);
 
   return topLevelFunctions;
 }
