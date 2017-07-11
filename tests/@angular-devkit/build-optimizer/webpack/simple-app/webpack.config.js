@@ -1,9 +1,9 @@
-const PurifyPlugin = require('ngo').PurifyPlugin;
+const PurifyPlugin = require('@angular-devkit/build-optimizer').PurifyPlugin;
 
 const config = require('./webpack.config.common.js');
 
 const ngoLoaderRule = {
-  loader: 'ngo/webpack-loader',
+  loader: '@angular-devkit/build-optimizer/webpack-loader',
   options: {
     sourceMap: true
   }

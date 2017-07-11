@@ -26,6 +26,29 @@ jobs:
       - run: npm install
       - run: npm run test
 
+  integration:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          key: angular_devkit-{{ .Branch }}-{{ checksum "package-lock.json" }}
+      - restore_cache:
+          key: angular_devkit-integration-simple{{ .Branch }}-{{ checksum "tests/@angular-devkit/build-optimizer/webpack/simple-app" }}
+      - restore_cache:
+          key: angular_devkit-integration-aio{{ .Branch }}-{{ checksum "tests/@angular-devkit/build-optimizer/webpack/aio-app" }}
+
+      - run: npm install
+      - run: xvfb-run -a npm run integration
+
+      - save_cache:
+          key: angular_devkit-integration-simple{{ .Branch }}-{{ checksum "tests/@angular-devkit/build-optimizer/webpack/simple-app" }}
+          paths:
+            - "tests/@angular-devkit/build-optimizer/webpack/simple-app/node_modules"
+      - save_cache:
+          key: angular_devkit-integration-aio{{ .Branch }}-{{ checksum "tests/@angular-devkit/build-optimizer/webpack/aio-app" }}
+          paths:
+            - "tests/@angular-devkit/build-optimizer/webpack/aio-app/node_modules"
+
   build:
     <<: *defaults
     steps:
@@ -49,3 +72,4 @@ workflows:
       - lint
       - build
       - test
+      - integration
