@@ -140,7 +140,12 @@ export default function(_: {}, logger: Logger) {
       .map((fileName) => path.relative(pkg.root, fileName))
       .filter(fileName => {
         // Schematics template files.
-        if (pkgJson['schematics'] && fileName.match(/\/files\//)) {
+        if (pkgJson['schematics'] && fileName.match(/(\/|\\)files(\/|\\)/)) {
+          return true;
+        }
+        // Build Optimizer integration tests.
+        if (packageName == '@angular-devkit/build-optimizer'
+          && fileName.match(/integration(\/|\\)/)) {
           return true;
         }
         if (fileName.endsWith('package.json')) {

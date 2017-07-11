@@ -38,7 +38,8 @@
       "@_/benchmark": [ "./packages/_/benchmark/src/index" ],
       "@angular-devkit/core": [ "./packages/angular_devkit/core/src/index" ],
       "@angular-devkit/schematics": [ "./packages/angular_devkit/schematics/src/index" ],
-      "@angular-devkit/schematics/tools": [ "./packages/angular_devkit/schematics/tools/index" ]
+      "@angular-devkit/schematics/tools": [ "./packages/angular_devkit/schematics/tools/index" ],
+      "@angular-devkit/build-optimizer/tools": [ "./packages/angular_devkit/build-optimizer/src/index" ]
     }
   },
   "exclude": [
@@ -46,7 +47,7 @@
     "dist/**/*",
     "node_modules/**/*",
     "packages/schematics/angular/*/files/**/*",
-    "packages/angular_devkit/ngo/integration/**/*",
+    "packages/angular_devkit/build-optimizer/integration/**/*",
     "tmp/**/*"
   ]
 }

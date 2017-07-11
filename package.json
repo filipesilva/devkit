@@ -13,8 +13,9 @@
     "Angular DevKit"
   ],
   "scripts": {
-    "admin": "./bin/devkit-admin",
-    "build": "tsc -p tsconfig.json",
+    "admin": "node ./bin/devkit-admin",
+    "build": "npm run admin -- build",
+    "build-tsc": "tsc -p tsconfig.json",
     "fix": "npm run lint -- --fix",
     "lint": "tslint --config tslint.json --project tsconfig.json --type-check",
     "test": "node ./bin/devkit-admin test"
