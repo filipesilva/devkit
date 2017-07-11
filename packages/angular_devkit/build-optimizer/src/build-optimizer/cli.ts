@@ -2,7 +2,7 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 
-import { ngo } from './ngo';
+import { buildOptimizer } from './build-optimizer';
 
 
 if (process.argv.length < 3 || process.argv.length > 4) {
@@ -26,7 +26,7 @@ if (!inputFile.match(tsOrJsRegExp)) {
 // Use provided output file, or add the .ngo suffix before the extension.
 const outputFile = process.argv[3] || inputFile.replace(tsOrJsRegExp, (subStr) => `.ngo${subStr}`);
 
-const ngoOutput = ngo({
+const ngoOutput = buildOptimizer({
   inputFilePath: join(currentDir, inputFile),
   outputFilePath: join(currentDir, outputFile),
   emitSourceMap: true,

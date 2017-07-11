@@ -1,4 +1,4 @@
-// This matches a comment left by the ngo-loader that contains pure import paths
+// This matches a comment left by the build-optimizer that contains pure import paths
 const importCommentRegex = /\/\*\* PURE_IMPORTS_START (\S+) PURE_IMPORTS_END \*\//mg;
 
 // TODO: handle sourcemaps

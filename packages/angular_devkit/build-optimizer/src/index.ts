@@ -1,5 +1,5 @@
-export { default as ngoLoader } from './ngo/webpack-loader';
-export { ngo } from './ngo/ngo';
+export { default as buildOptimizerLoader } from './build-optimizer/webpack-loader';
+export { buildOptimizer } from './build-optimizer/build-optimizer';
 
 export { PurifyPlugin } from './purify/webpack-plugin';
 export { purify } from './purify/purify';

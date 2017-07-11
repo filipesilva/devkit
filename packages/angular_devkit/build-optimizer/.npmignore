@@ -1,9 +1,0 @@
-.circleci/
-integration/
-scripts/
-src/
-tsconfig.json
-tsconfig.lib.json
-tsconfig.spec.json
-tslint.json
-yarn.lock

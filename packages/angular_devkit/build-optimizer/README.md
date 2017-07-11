@@ -1,8 +1,6 @@
-[![CircleCI](https://circleci.com/gh/angular/ngo/tree/master.svg?style=shield)](https://circleci.com/gh/angular/ngo/tree/master)
+# Angular Build Optimizer
 
-# Angular Optimizer (NGO)
-
-NGO contains Angular optimizations applicable to JavaScript code as a TypeScript transform pipeline.
+Angular Build Optimizer contains Angular optimizations applicable to JavaScript code as a TypeScript transform pipeline.
 
 
 ## Available optimizations
@@ -97,14 +95,14 @@ enums and webpack imports (used with [Prefix functions](#prefix-functions))
 ## Library Usage
 
 ```
-import { ngo } from './ngo';
+import { buildOptimizer } from '@angular-devkit/build-optimizer';
 
-const transpiledContent = ngo({ content: input }).content;
+const transpiledContent = buildOptimizer({ content: input }).content;
 ```
 
 Available options:
 ```
-export interface NgoOptions {
+export interface BuildOptimizerOptions {
   content?: string;
   inputFilePath?: string;
   outputFilePath?: string;
@@ -117,14 +115,14 @@ export interface NgoOptions {
 ## Webpack loader and plugin usage:
 
 ```
-const PurifyPlugin = require('ngo').PurifyPlugin;
+const PurifyPlugin = require('@angular-devkit/build-optimizer').PurifyPlugin;
 
 module.exports = {
   module: {
     rules: [
       {
         test: /\.js$/,
-        loader: 'ngo/webpack-loader'
+        loader: '@angular-devkit/build-optimizer/webpack-loader'
         options: {
           sourceMap: false
         }
@@ -141,8 +139,8 @@ module.exports = {
 ## CLI usage
 
 ```
-ngo input.js
-ngo input.js output.js
+build-optimizer input.js
+build-optimizer input.js output.js
 purify input.js
 purify input.js output.js
 ```

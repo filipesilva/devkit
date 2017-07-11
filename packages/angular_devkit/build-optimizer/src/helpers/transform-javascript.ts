@@ -41,7 +41,7 @@ export const transformJavascript = (options: TransformJavascriptOptions) => {
   // We're not actually writing anything to disk, but still need to define an outDir
   // because otherwise TS will fail to emit JS since it would overwrite the original.
   const tempOutDir = '$$_temp/';
-  const tempFilename = 'ngo-default-file.js';
+  const tempFilename = 'bo-default-file.js';
   fileMap.set(tempFilename, content);
 
   // We need to load the default lib for noEmitOnError to work properly.

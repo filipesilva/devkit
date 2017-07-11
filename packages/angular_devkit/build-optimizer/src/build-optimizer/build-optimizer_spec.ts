@@ -1,10 +1,10 @@
 import { oneLine } from 'common-tags';
 import { RawSourceMap } from 'source-map';
 
-import { ngo } from './ngo';
+import { buildOptimizer } from './build-optimizer';
 
 
-describe('ngo', () => {
+describe('build-optimizer', () => {
   const imports = 'import { Injectable, Input } from \'@angular/core\';';
   const clazz = 'var Clazz = (function () { function Clazz() { } return Clazz; }());';
   const staticProperty = 'Clazz.prop = 1;';
@@ -34,7 +34,7 @@ describe('ngo', () => {
       `;
       // tslint:enable:max-line-length
 
-      expect(oneLine`${ngo({ content: input }).content}`).toEqual(output);
+      expect(oneLine`${buildOptimizer({ content: input }).content}`).toEqual(output);
     });
 
     it('doesn\'t process files without decorators/ctorParameters', () => {
@@ -43,7 +43,7 @@ describe('ngo', () => {
         ${staticProperty}
       `;
 
-      expect(oneLine`${ngo({ content: input }).content}`).toEqual(input);
+      expect(oneLine`${buildOptimizer({ content: input }).content}`).toEqual(input);
     });
   });
 
@@ -56,7 +56,7 @@ describe('ngo', () => {
         Clazz.decorators = [ { type: Injectable } ];
       `;
 
-      expect(oneLine`${ngo({ content: input }).content}`).toEqual(input);
+      expect(oneLine`${buildOptimizer({ content: input }).content}`).toEqual(input);
     });
 
     it('throws on files with invalid syntax in strict mode', () => {
@@ -66,7 +66,7 @@ describe('ngo', () => {
         Clazz.decorators = [ { type: Injectable } ];
       `;
 
-      expect(() => ngo({ content: input, strict: true })).toThrow();
+      expect(() => buildOptimizer({ content: input, strict: true })).toThrow();
     });
   });
 
@@ -78,7 +78,7 @@ describe('ngo', () => {
     `;
 
     it('doesn\'t produce sourcemaps by default', () => {
-      expect(ngo({ content: transformableInput }).sourceMap).toBeFalsy();
+      expect(buildOptimizer({ content: transformableInput }).sourceMap).toBeFalsy();
     });
 
     it('produces sourcemaps', () => {
@@ -86,8 +86,10 @@ describe('ngo', () => {
         var Clazz = (function () { function Clazz() { } return Clazz; }());
         ${staticProperty}
       `;
-      expect(ngo({ content: ignoredInput, emitSourceMap: true }).sourceMap).toBeTruthy();
-      expect(ngo({ content: transformableInput, emitSourceMap: true }).sourceMap).toBeTruthy();
+      expect(buildOptimizer({ content: ignoredInput, emitSourceMap: true }).sourceMap).toBeTruthy();
+      expect(buildOptimizer(
+        { content: transformableInput, emitSourceMap: true },
+      ).sourceMap).toBeTruthy();
     });
 
     it('produces sourcemaps for ignored files', () => {
@@ -95,19 +97,23 @@ describe('ngo', () => {
         var Clazz = (function () { function Clazz() { } return Clazz; }());
         ${staticProperty}
       `;
-      expect(ngo({ content: ignoredInput, emitSourceMap: true }).sourceMap).toBeTruthy();
-      expect(ngo({ content: transformableInput, emitSourceMap: true }).sourceMap).toBeTruthy();
+      expect(buildOptimizer({ content: ignoredInput, emitSourceMap: true }).sourceMap).toBeTruthy();
+      expect(buildOptimizer(
+        { content: transformableInput, emitSourceMap: true },
+      ).sourceMap).toBeTruthy();
     });
 
     it('emits sources content', () => {
-      const sourceMap =
-        ngo({ content: transformableInput, emitSourceMap: true }).sourceMap as RawSourceMap;
+      const sourceMap = buildOptimizer(
+        { content: transformableInput, emitSourceMap: true },
+      ).sourceMap as RawSourceMap;
       const sourceContent = sourceMap.sourcesContent as string[];
       expect(sourceContent[0]).toEqual(transformableInput);
     });
 
     it('uses empty strings if inputFilePath and outputFilePath is not provided', () => {
-      const { content, sourceMap } = ngo({ content: transformableInput, emitSourceMap: true });
+      const { content, sourceMap } = buildOptimizer(
+        { content: transformableInput, emitSourceMap: true });
 
       if (!sourceMap) {
         throw new Error('sourceMap was not generated.');
@@ -119,8 +125,8 @@ describe('ngo', () => {
 
     it('uses inputFilePath and outputFilePath if provided', () => {
       const inputFilePath = 'file.js';
-      const outputFilePath = 'file.ngo.js';
-      const { content, sourceMap } = ngo({
+      const outputFilePath = 'file.bo.js';
+      const { content, sourceMap } = buildOptimizer({
         content: transformableInput,
         emitSourceMap: true,
         inputFilePath,

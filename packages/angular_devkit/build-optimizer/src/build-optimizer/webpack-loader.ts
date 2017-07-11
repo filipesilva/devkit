@@ -2,21 +2,21 @@ import { RawSourceMap, SourceMapConsumer, SourceMapGenerator } from 'source-map'
 import * as webpack from 'webpack';
 const loaderUtils = require('loader-utils');
 
-import { ngo } from './ngo';
+import { buildOptimizer } from './build-optimizer';
 
 
-interface NgoLoaderOptions {
+interface BuildOptimizerLoaderOptions {
   sourceMap: boolean;
 }
 
-export default function ngoLoader
+export default function buildOptimizerLoader
   (this: webpack.loader.LoaderContext, content: string, previousSourceMap: RawSourceMap) {
   this.cacheable();
-  const options: NgoLoaderOptions = loaderUtils.getOptions(this) || {};
+  const options: BuildOptimizerLoaderOptions = loaderUtils.getOptions(this) || {};
 
-  const ngoOutput = ngo({ content, emitSourceMap: options.sourceMap });
-  const intermediateSourceMap = ngoOutput.sourceMap;
-  let newContent = ngoOutput.content;
+  const boOutput = buildOptimizer({ content, emitSourceMap: options.sourceMap });
+  const intermediateSourceMap = boOutput.sourceMap;
+  let newContent = boOutput.content;
 
   let newSourceMap;
 
@@ -43,7 +43,3 @@ export default function ngoLoader
 
   this.callback(null, newContent, newSourceMap);
 }
-
-// TODO: investigate weird extra maps at webpack:// root
-// without ngo: main.bundle.js, vendor.bundle.js
-// with ngo: app.module.ngfactory.js, main.bundle.js, null?37a6, vendor.bundle.js

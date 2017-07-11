@@ -13,7 +13,7 @@ const HAS_DECORATORS = /decorators/;
 const HAS_CTOR_PARAMETERS = /ctorParameters/;
 const HAS_TS_HELPERS = /var (__extends|__decorate|__metadata|__param) = /;
 
-export interface NgoOptions {
+export interface BuildOptimizerOptions {
   content?: string;
   inputFilePath?: string;
   outputFilePath?: string;
@@ -21,7 +21,9 @@ export interface NgoOptions {
   strict?: boolean;
 }
 
-export function ngo(options: NgoOptions): { content: string, sourceMap: RawSourceMap | null } {
+export function buildOptimizer(options: BuildOptimizerOptions):
+  { content: string, sourceMap: RawSourceMap | null } {
+
   options.emitSourceMap = !!options.emitSourceMap;
   const { inputFilePath, emitSourceMap, outputFilePath, strict } = options;
   let { content } = options;
