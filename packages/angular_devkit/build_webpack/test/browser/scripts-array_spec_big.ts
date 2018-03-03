@@ -46,17 +46,17 @@ describe('Browser Builder scripts array', () => {
 
   it('works', (done) => {
     const matches: { [path: string]: string } = {
-      './dist/scripts.bundle.js': 'input-script',
-      './dist/lazy-script.bundle.js': 'lazy-script',
-      './dist/renamed-script.bundle.js': 'pre-rename-script',
-      './dist/renamed-lazy-script.bundle.js': 'pre-rename-lazy-script',
-      './dist/main.bundle.js': 'input-script',
-      './dist/index.html': '<script type="text/javascript" src="inline.bundle.js"></script>'
-        + '<script type="text/javascript" src="polyfills.bundle.js"></script>'
-        + '<script type="text/javascript" src="scripts.bundle.js"></script>'
-        + '<script type="text/javascript" src="renamed-script.bundle.js"></script>'
-        + '<script type="text/javascript" src="vendor.bundle.js"></script>'
-        + '<script type="text/javascript" src="main.bundle.js"></script>',
+      './dist/scripts.js': 'input-script',
+      './dist/lazy-script.js': 'lazy-script',
+      './dist/renamed-script.js': 'pre-rename-script',
+      './dist/renamed-lazy-script.js': 'pre-rename-lazy-script',
+      './dist/main.js': 'input-script',
+      './dist/index.html': '<script type="text/javascript" src="runtime.js"></script>'
+        + '<script type="text/javascript" src="polyfills.js"></script>'
+        + '<script type="text/javascript" src="scripts.js"></script>'
+        + '<script type="text/javascript" src="renamed-script.js"></script>'
+        + '<script type="text/javascript" src="vendor.js"></script>'
+        + '<script type="text/javascript" src="main.js"></script>',
     };
 
     host.writeMultipleFiles(scripts);
@@ -104,10 +104,10 @@ describe('Browser Builder scripts array', () => {
         expect(host.fileMatchExists(outputPath, /renamed-script\.[0-9a-f]{20}\.bundle\.js\.map/))
           .toBeTruthy();
         expect(host.fileMatchExists(outputPath, /scripts\.[0-9a-f]{20}\.bundle\.js/)).toBeTruthy();
-        expect(host.asSync().exists(normalize('dist/lazy-script.bundle.js'))).toBe(true);
-        expect(host.asSync().exists(normalize('dist/lazy-script.bundle.js.map'))).toBe(true);
-        expect(host.asSync().exists(normalize('dist/renamed-lazy-script.bundle.js'))).toBe(true);
-        expect(host.asSync().exists(normalize('dist/renamed-lazy-script.bundle.js.map')))
+        expect(host.asSync().exists(normalize('dist/lazy-script.js'))).toBe(true);
+        expect(host.asSync().exists(normalize('dist/lazy-script.js.map'))).toBe(true);
+        expect(host.asSync().exists(normalize('dist/renamed-lazy-script.js'))).toBe(true);
+        expect(host.asSync().exists(normalize('dist/renamed-lazy-script.js.map')))
           .toBe(true);
       }),
     ).subscribe(undefined, done.fail, done);
@@ -131,7 +131,7 @@ describe('Browser Builder scripts array', () => {
           + /['"]ainput-script['"](.|\n|\r)*/.source
           + /['"]cinput-script['"]/.source,
         );
-        const fileName = './dist/scripts.bundle.js';
+        const fileName = './dist/scripts.js';
         const content = virtualFs.fileBufferToString(host.asSync().read(normalize(fileName)));
         expect(content).toMatch(re);
       }),
