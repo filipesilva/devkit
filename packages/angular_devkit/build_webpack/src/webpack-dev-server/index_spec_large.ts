@@ -6,9 +6,10 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
+import { request, runTargetSpec } from '@angular-devkit/architect/testing';
 import { from } from 'rxjs';
 import { concatMap, take, tap } from 'rxjs/operators';
-import { host, request, runTargetSpec } from '../utils';
+import { host, workspaceRoot } from '../test-utils';
 
 
 describe('Dev Server Builder', () => {
@@ -18,7 +19,7 @@ describe('Dev Server Builder', () => {
   afterEach(done => host.restore().subscribe(undefined, done.fail, done));
 
   it('works', (done) => {
-    runTargetSpec(host, webpackTargetSpec).pipe(
+    runTargetSpec(workspaceRoot, host, webpackTargetSpec).pipe(
       tap((buildEvent) => expect(buildEvent.success).toBe(true)),
       concatMap(() => from(request('http://localhost:8080/bundle.js'))),
       tap(response => expect(response).toContain(`console.log('hello world')`)),

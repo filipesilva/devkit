@@ -6,9 +6,10 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
+import { runTargetSpec } from '@angular-devkit/architect/testing';
 import { normalize } from '@angular-devkit/core';
 import { retry } from 'rxjs/operators';
-import { host, protractorTargetSpec, runTargetSpec } from '../utils';
+import { host, protractorTargetSpec, workspaceRoot } from '../utils';
 
 
 // TODO: replace this with an "it()" macro that's reusable globally.
@@ -23,7 +24,7 @@ describe('Protractor Builder', () => {
   afterEach(done => host.restore().subscribe(undefined, done.fail, done));
 
   linuxOnlyIt('works', (done) => {
-    runTargetSpec(host, protractorTargetSpec).pipe(
+    runTargetSpec(workspaceRoot, host, protractorTargetSpec).pipe(
       retry(3),
     ).subscribe(undefined, done.fail, done);
   }, 30000);
@@ -31,7 +32,7 @@ describe('Protractor Builder', () => {
   linuxOnlyIt('works with no devServerTarget', (done) => {
     const overrides = { devServerTarget: undefined };
 
-    runTargetSpec(host, protractorTargetSpec, overrides).pipe(
+    runTargetSpec(workspaceRoot, host, protractorTargetSpec, overrides).pipe(
       // This should fail because no server is available for connection.
     ).subscribe(undefined, () => done(), done.fail);
   }, 30000);
@@ -42,7 +43,7 @@ describe('Protractor Builder', () => {
 
     const overrides = { specs: ['./e2e/renamed-app.e2e-spec.ts'] };
 
-    runTargetSpec(host, protractorTargetSpec, overrides).pipe(
+    runTargetSpec(workspaceRoot, host, protractorTargetSpec, overrides).pipe(
       retry(3),
     ).subscribe(undefined, done.fail, done);
   }, 60000);
@@ -61,7 +62,7 @@ describe('Protractor Builder', () => {
 
     const overrides = { suite: 'app' };
 
-    runTargetSpec(host, protractorTargetSpec, overrides).pipe(
+    runTargetSpec(workspaceRoot, host, protractorTargetSpec, overrides).pipe(
       retry(3),
     ).subscribe(undefined, done.fail, done);
   }, 60000);
