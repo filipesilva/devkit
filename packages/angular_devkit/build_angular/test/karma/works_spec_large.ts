@@ -8,7 +8,7 @@
 
 import { runTargetSpec } from '@angular-devkit/architect/testing';
 import { tap } from 'rxjs/operators';
-import { host, karmaTargetSpec, workspaceRoot } from '../utils';
+import { host, karmaTargetSpec } from '../utils';
 
 
 describe('Karma Builder', () => {
@@ -16,7 +16,7 @@ describe('Karma Builder', () => {
   afterEach(done => host.restore().subscribe(undefined, done.fail, done));
 
   it('runs', (done) => {
-    runTargetSpec(workspaceRoot, host, karmaTargetSpec).pipe(
+    runTargetSpec(host, karmaTargetSpec).pipe(
       tap((buildEvent) => expect(buildEvent.success).toBe(true)),
     ).subscribe(undefined, done.fail, done);
   }, 30000);
@@ -25,14 +25,14 @@ describe('Karma Builder', () => {
     host.writeMultipleFiles({
       'src/app/app.component.spec.ts': '<p> definitely not typescript </p>',
     });
-    runTargetSpec(workspaceRoot, host, karmaTargetSpec).pipe(
+    runTargetSpec(host, karmaTargetSpec).pipe(
       tap((buildEvent) => expect(buildEvent.success).toBe(false)),
     ).subscribe(undefined, done.fail, done);
   }, 30000);
 
   it('supports ES2015 target', (done) => {
     host.replaceInFile('tsconfig.json', '"target": "es5"', '"target": "es2015"');
-    runTargetSpec(workspaceRoot, host, karmaTargetSpec).pipe(
+    runTargetSpec(host, karmaTargetSpec).pipe(
       tap((buildEvent) => expect(buildEvent.success).toBe(true)),
     ).subscribe(undefined, done.fail, done);
   }, 30000);

@@ -11,8 +11,7 @@ import { join, normalize } from '@angular-devkit/core';
 
 
 const devkitRoot = normalize((global as any)._DevKitRoot); // tslint:disable-line:no-any
-export const basicWorkspaceRoot = join(devkitRoot,
-  'tests/@angular_devkit/build_webpack/basic-app/');
+const basicWorkspaceRoot = join(devkitRoot, 'tests/@angular_devkit/build_webpack/basic-app/');
 export const basicHost = new TestProjectHost(basicWorkspaceRoot);
-export const workspaceRoot = join(devkitRoot, 'tests/@angular_devkit/build_webpack/angular-app/');
-export const host = new TestProjectHost(workspaceRoot);
+const angularWorkspaceRoot = join(devkitRoot, 'tests/@angular_devkit/build_webpack/angular-app/');
+export const angularHost = new TestProjectHost(angularWorkspaceRoot);

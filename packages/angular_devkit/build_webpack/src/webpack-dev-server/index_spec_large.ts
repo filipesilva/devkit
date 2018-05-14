@@ -9,17 +9,17 @@
 import { request, runTargetSpec } from '@angular-devkit/architect/testing';
 import { from } from 'rxjs';
 import { concatMap, take, tap } from 'rxjs/operators';
-import { host, workspaceRoot } from '../test-utils';
+import { basicHost } from '../test-utils';
 
 
 describe('Dev Server Builder', () => {
   const webpackTargetSpec = { project: 'app', target: 'serve' };
 
-  beforeEach(done => host.initialize().subscribe(undefined, done.fail, done));
-  afterEach(done => host.restore().subscribe(undefined, done.fail, done));
+  beforeEach(done => basicHost.initialize().subscribe(undefined, done.fail, done));
+  afterEach(done => basicHost.restore().subscribe(undefined, done.fail, done));
 
   it('works', (done) => {
-    runTargetSpec(workspaceRoot, host, webpackTargetSpec).pipe(
+    runTargetSpec(basicHost, webpackTargetSpec).pipe(
       tap((buildEvent) => expect(buildEvent.success).toBe(true)),
       concatMap(() => from(request('http://localhost:8080/bundle.js'))),
       tap(response => expect(response).toContain(`console.log('hello world')`)),
