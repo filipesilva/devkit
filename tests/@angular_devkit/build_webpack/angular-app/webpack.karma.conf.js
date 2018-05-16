@@ -17,15 +17,19 @@ module.exports = function (config) {
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
       require('karma-webpack'),
+      require('karma-sourcemap-loader'),
       require('@angular-devkit/build-karma/plugins/karma'),
     ],
+    client: {
+      clearContext: false // leave Jasmine Spec Runner output visible in browser
+    },
     files: [
       path.join(__dirname, 'src/polyfills.ts'),
       path.join(__dirname, 'src/test.ts'),
     ],
     preprocessors: {
-      [path.join(__dirname, 'src/polyfills.ts')]: ['webpack'],
-      [path.join(__dirname, 'src/test.ts')]: ['webpack'],
+      [path.join(__dirname, 'src/polyfills.ts')]: ['webpack', 'sourcemap'],
+      [path.join(__dirname, 'src/test.ts')]: ['webpack', 'sourcemap'],
     },
     // MIME types are needed when using TypeScript files.
     mime: {

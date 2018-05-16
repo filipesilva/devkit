@@ -2,12 +2,9 @@
   "$schema": "../../../../packages/angular_devkit/core/src/workspace/workspace-schema.json",
   "version": 1,
   "newProjectRoot": "./projects",
-  "cli": {},
-  "schematics": {},
-  "architect": {},
   "projects": {
     "app": {
-      "root": "src",
+      "root": "",
       "sourceRoot": "src",
       "projectType": "application",
       "schematics": {},
@@ -16,6 +13,11 @@
           "builder": "../../../../packages/angular_devkit/build_webpack:webpack",
           "options": {
             "webpackConfig": "webpack.config.js"
+          },
+          "configurations": {
+            "production": {
+              "webpackConfig": "webpack.config.prod.js"
+            }
           }
         },
         "serve-webpack": {
@@ -27,7 +29,7 @@
         "test-karma": {
           "builder": "../../../../packages/angular_devkit/build_karma:karma",
           "options": {
-            "karmaConfig": "karma.conf.js",
+            "karmaConfig": "webpack.karma.conf.js",
             "singleRun": true
           }
         }
