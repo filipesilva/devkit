@@ -13,10 +13,10 @@ import { angularHost, basicHost } from '../test-utils';
 
 
 describe('Webpack Builder basic test', () => {
-  const outputPath = normalize('dist');
-  const webpackTargetSpec = { project: 'app', target: 'build' };
-
   describe('basic app', () => {
+    const outputPath = normalize('dist');
+    const webpackTargetSpec = { project: 'app', target: 'build' };
+
     beforeEach(done => basicHost.initialize().subscribe(undefined, done.fail, done));
     afterEach(done => basicHost.restore().subscribe(undefined, done.fail, done));
 
@@ -31,6 +31,9 @@ describe('Webpack Builder basic test', () => {
   });
 
   describe('Angular app', () => {
+    const outputPath = normalize('dist/foo');
+    const webpackTargetSpec = { project: 'app', target: 'build-webpack' };
+
     beforeEach(done => angularHost.initialize().subscribe(undefined, done.fail, done));
     afterEach(done => angularHost.restore().subscribe(undefined, done.fail, done));
 

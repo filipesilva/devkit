@@ -1,9 +1,6 @@
 const { AngularCompilerPlugin } = require('@ngtools/webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
-const postcssUrl = require('postcss-url');
-const postcssImports = require('postcss-import');
-const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -36,7 +33,9 @@ function webpackConfigFactory(options) {
   const projectRoot = path.resolve(__dirname, './');
 
   // Style configurations.
-  const globalStylesEntryPoints = [path.resolve(workspaceRoot, 'src/styles.css')];
+  const globalStylesEntryPoints = [
+    path.resolve(workspaceRoot, 'src/styles.css'),
+  ];
   const componentPostCssLoader = {
     loader: 'postcss-loader',
     options: {
@@ -78,8 +77,8 @@ function webpackConfigFactory(options) {
       styles: globalStylesEntryPoints,
     },
     output: {
-      path: path.resolve(workspaceRoot, 'dist'),
-      filename: `[name].js`,
+      path: path.resolve(workspaceRoot, 'dist/foo'),
+      filename: '[name].js',
     },
     optimization: {
       noEmitOnErrors: true,
@@ -208,12 +207,11 @@ function webpackConfigFactory(options) {
         [{
           context: path.resolve(workspaceRoot, 'src/'),
           to: '',
-          from: { glob: 'favicon.ico', dot: true }
-        },
-        {
+          from: { glob: 'favicon.ico', dot: true },
+        }, {
           context: path.resolve(workspaceRoot, 'src/assets/'),
           to: 'assets/',
-          from: { glob: '**/*', dot: true }
+          from: { glob: '**/*', dot: true },
         }],
         { ignore: ['.gitkeep', '**/.DS_Store', '**/Thumbs.db'] }
       ),
@@ -224,7 +222,7 @@ function webpackConfigFactory(options) {
         filename: 'scripts.js',
         // Full paths to scripts to include.
         scripts: [
-          path.resolve(workspaceRoot, 'src/scripts.js')
+          path.resolve(workspaceRoot, 'src/scripts.js'),
         ],
         basePath: workspaceRoot,
       }),
@@ -242,4 +240,3 @@ function webpackConfigFactory(options) {
 }
 
 module.exports = webpackConfigFactory;
-
