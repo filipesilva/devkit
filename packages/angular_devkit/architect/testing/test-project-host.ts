@@ -63,6 +63,7 @@ export class TestProjectHost extends NodeJsSyncHost {
     return this.findUniqueFolderPath().pipe(
       // Save the path and create a scoped host for it.
       tap(newFolderPath => {
+        console.log('### initializing', newFolderPath)
         this._currentRoot = newFolderPath;
         this._scopedSyncHost = new virtualFs.SyncDelegateHost(
           new virtualFs.ScopedHost(this, this.root()));
@@ -86,12 +87,17 @@ export class TestProjectHost extends NodeJsSyncHost {
       return EMPTY;
     }
 
+    console.log('### deleting', this.root())
+
     // Delete the current root and clear the variables.
     // Wait 50ms and retry up to 10 times, to give time for file locks to clear.
     return this.exists(this.root()).pipe(
       delay(50),
+      tap(() => console.log('### before delete')),
       concatMap(exists => exists ? this.delete(this.root()) : of(null)),
+      tap(() => console.log('### after delete')),
       retry(10),
+      tap(() => console.log('### after retry')),
       tap(() => {
         this._currentRoot = null;
         this._scopedSyncHost = null;

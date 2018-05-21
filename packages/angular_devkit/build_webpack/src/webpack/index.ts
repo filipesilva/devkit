@@ -68,7 +68,12 @@ export class WebpackBuilder implements Builder<WebpackBuilderSchema> {
           const watching = webpackCompiler.watch(watchOptions, callback);
 
           // Teardown logic. Close the watcher when unsubscribed from.
-          return () => watching.close(() => { });
+          return () => {
+            console.log('### unsubscribing in webpack builder')
+            watching.close(() => {
+              console.log('###  close callback')
+             });
+          };
         } else {
           webpackCompiler.run(callback);
         }
