@@ -7,7 +7,7 @@
  */
 
 import { runTargetSpec } from '@angular-devkit/architect/testing';
-import { tap } from 'rxjs/operators';
+import { tap, toArray } from 'rxjs/operators';
 import { host, karmaTargetSpec } from '../utils';
 
 
@@ -17,7 +17,8 @@ describe('Karma Builder', () => {
 
   it('runs', (done) => {
     runTargetSpec(host, karmaTargetSpec).pipe(
-      tap((buildEvent) => expect(buildEvent.success).toBe(true)),
+      toArray(),
+      tap((buildEvents) => expect(buildEvents).toEqual([{ success: true }])),
     ).subscribe(undefined, done.fail, done);
   }, 30000);
 
